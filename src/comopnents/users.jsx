@@ -60,7 +60,7 @@ const Users = () => {
       </>
     )
   }else {
-    return <h1><span className='badge bg-primary'>{renderPhrase()}</span></h1>
+    return <h1><span className='badge bg-danger'>{renderPhrase()}</span></h1>
   }
 }
 
