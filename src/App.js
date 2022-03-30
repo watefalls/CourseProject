@@ -26,7 +26,7 @@ function App() {
 
   return (
     <>
-      <Users users={users} onDelete={handleDelete} renderPhrase={SearchStatus} bookmark={handleToggleBookmark}/>
+      <Users users={users} onDelete={handleDelete} renderPhrase={SearchStatus} toggleBookmark={handleToggleBookmark}/>
     </>
   )
 }

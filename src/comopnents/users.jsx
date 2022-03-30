@@ -2,7 +2,6 @@ import React from 'react';
 import User from './user';
 
 const Users = ({users, ...rest}) => {
-
   if(users.length > 0){
     return (
       <>
@@ -20,7 +19,7 @@ const Users = ({users, ...rest}) => {
             </tr>
           </thead>
           <tbody>
-            {users.map(user => <User {...user} key={user._id} onDelete={rest.onDelete} bookmarkChange={rest.bookmark}/>)}
+            {users.map(user => <User key={user._id} {...rest} {...user} />)}
           </tbody>
         </table>
       </>
@@ -31,3 +30,5 @@ const Users = ({users, ...rest}) => {
 }
 
 export default Users;
+
+// onDelete={rest.onDelete} bookmarkChange={rest.bookmark}
