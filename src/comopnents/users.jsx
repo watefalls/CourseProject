@@ -26,8 +26,8 @@ const Users = ({ users, ...rest }) => {
         <table className="table text-center">
           <thead>
             <tr>
-              <th scope="col">Имя</th>
-              <th scope="col">Качества</th>
+              <th scope="col" style={{ width: "15%" }}>Имя</th>
+              <th scope="col" style={{ width: "20%" }}>Качества</th>
               <th scope="col">Профессия</th>
               <th scope="col">Встретился, раз</th>
               <th scope="col">Оценка</th>
