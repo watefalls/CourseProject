@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import Pagination from "./pagination";
 import User from "./user";
 import { paginate } from "../utils/paginate";
 import PropTypes from "prop-types";
 
-const Users = ({ users, ...rest }) => {
+const Users = ({ users, onPageChange, currentPage, ...rest }) => {
   const count = users.length;
   const pageSize = 4;
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
 
-  const handlePageChange = (pageIndex) => {
-    setCurrentPage(pageIndex);
-  };
+  // const handlePageChange = (pageIndex) => {
+  //   setCurrentPage(pageIndex);
+  // };
 
   const userCrop = paginate(users, currentPage, pageSize);
 
@@ -45,7 +45,7 @@ const Users = ({ users, ...rest }) => {
           itemsCount={count}
           pageSize={pageSize}
           currentPage={currentPage}
-          onPageChange={handlePageChange}
+          onPageChange={onPageChange}
         />
       </>
     );
@@ -61,7 +61,9 @@ const Users = ({ users, ...rest }) => {
 };
 
 Users.propTypes = {
-  users: PropTypes.array.isRequired
+  users: PropTypes.array.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+  currentPage: PropTypes.number.isRequired
 };
 
 export default Users;
