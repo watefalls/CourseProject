@@ -19,3 +19,24 @@ code {
   cursor: pointer;
   border: 2px solid rgb(59, 57, 57);
 }
+
+@keyframes loader {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loader {
+  width: 100px;
+  height: 100px;
+  margin: 100px auto;
+  
+}
+
+.loader img {
+  width: 40px;
+  animation: loader 6s linear infinite;
+}

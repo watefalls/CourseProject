@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Users from "./comopnents/users";
 import api from "./api";
+import loaderImg from "./img/loading.png";
 
 function App() {
   const [allUsers, setUsers] = useState();
@@ -53,7 +54,9 @@ function App() {
             currentPage={currentPage}
             pageSize={pageSize}
           />
-          : "Загрузка..."
+          : <div className="loader">
+            <img src={loaderImg} style={{ width: "50px" }} />
+          </div>
       }
     </>
   );
