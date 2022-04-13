@@ -1,22 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Users from "./comopnents/users";
-import SearchStatus from "./comopnents/searchStatus";
 import api from "./api";
 
 function App() {
-  const [users, setUsers] = useState(api.users.fetchAll());
+  const [allUsers, setUsers] = useState();
+
+  useEffect(() => {
+    api.users.fetchAll().then(data => setUsers(data));
+  }, []);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [countOnDelete, setCountOnDelete] = useState(1);
-  const itemsCount = Math.ceil(users.length / 4);
+  const pageSize = 4;
+  const itemsCount = allUsers ? Math.ceil(allUsers.length / pageSize) : 0;
 
   const handlePageChange = (pageIndex) => {
     setCurrentPage(pageIndex);
   };
 
   const handleDelete = (userId) => {
-    setCountOnDelete(prevState => prevState + 1);
+    setCountOnDelete((prevState) => prevState + 1);
     setUsers((prevState) => prevState.filter((user) => user._id !== userId));
-    if (countOnDelete === 4 && currentPage !== currentPage - 1) {
+    if (countOnDelete === pageSize && currentPage !== currentPage - 1) {
       handlePageChange(currentPage - 1);
       setCountOnDelete(1);
       setCurrentPage(itemsCount - 1);
@@ -24,28 +29,32 @@ function App() {
   };
 
   const handleToggleBookmark = (id) => {
-    const currentUser = users.find((user) => user._id === id);
+    const currentUser = allUsers.find((user) => user._id === id);
     if (!currentUser.bookmark) {
       currentUser.bookmark = true;
-      const newUsers = [...users];
+      const newUsers = [...allUsers];
       setUsers(newUsers);
     } else {
       currentUser.bookmark = false;
-      const newUsers = [...users];
+      const newUsers = [...allUsers];
       setUsers(newUsers);
     }
   };
 
   return (
     <>
-      <Users
-        users={users}
-        onDelete={handleDelete}
-        renderPhrase={SearchStatus}
-        toggleBookmark={handleToggleBookmark}
-        onPageChange={handlePageChange}
-        currentPage={currentPage}
-      />
+      {
+        allUsers
+          ? <Users
+            allUsers={allUsers}
+            onDelete={handleDelete}
+            toggleBookmark={handleToggleBookmark}
+            onPageChange={handlePageChange}
+            currentPage={currentPage}
+            pageSize={pageSize}
+          />
+          : "Загрузка..."
+      }
     </>
   );
 }
