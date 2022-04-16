@@ -102,6 +102,8 @@ const Users = ({ allUsers, onPageChange, currentPage, pageSize, ...rest }) => {
   }
 };
 
+// проверка мержа
+
 Users.propTypes = {
   allUsers: PropTypes.array.isRequired,
   onPageChange: PropTypes.func.isRequired,
