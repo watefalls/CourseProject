@@ -12,6 +12,10 @@ const Users = ({ allUsers, onPageChange, currentPage, pageSize, ...rest }) => {
   const [professions, setProfessions] = useState();
   const [selectedProf, setSelectedProf] = useState();
 
+  const clearFilter = () => {
+    setSelectedProf();
+  };
+
   useEffect(() => {
     api.professions.fetchAll().then((data) => setProfessions(data));
   }, []);
@@ -29,16 +33,12 @@ const Users = ({ allUsers, onPageChange, currentPage, pageSize, ...rest }) => {
   const count = filteredUsers.length;
   const userCrop = paginate(filteredUsers, currentPage, pageSize);
 
-  const clearFilter = () => {
-    setSelectedProf();
-  };
-
-  if (count > 0) {
+  if (allUsers.length > 0) {
     return (
       <>
         <div className="searchStatus mb-10">
           <h1>
-            <span className="badge bg-primary">{SearchStatus(count)}</span>
+            <span className="badge bg-primary">{SearchStatus(allUsers.length)}</span>
           </h1>
         </div>
         <div className="d-flex mt-2">
@@ -76,9 +76,10 @@ const Users = ({ allUsers, onPageChange, currentPage, pageSize, ...rest }) => {
               </tr>
             </thead>
             <tbody>
-              {userCrop.map((user) => (
-                <User key={user._id} {...rest} {...user} />
-              ))}
+              { count > 0
+                ? userCrop.map((user) => (<User key={user._id} {...rest} {...user} />))
+                : <tr><td><h1><span className="badge bg-danger">Ни кто из этой категории с тобой не тусанет</span></h1></td></tr>
+              }
             </tbody>
           </table>
         </div>
@@ -95,7 +96,7 @@ const Users = ({ allUsers, onPageChange, currentPage, pageSize, ...rest }) => {
   } else {
     return (
       <h1>
-        <span className="badge bg-danger">{SearchStatus(count)}</span>
+        <span className="badge bg-danger">{SearchStatus(allUsers.length)}</span>
       </h1>
     );
   }
