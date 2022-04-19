@@ -41,6 +41,6 @@ code {
   animation: loader 6s linear infinite;
 }
 
-.bi {
+thead .bi {
   display: none;
 }
