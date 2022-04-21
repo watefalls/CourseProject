@@ -14,8 +14,7 @@ const Users = () => {
   const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
   const [allUsers, setUsers] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [countOnDelete, setCountOnDelete] = useState(1);
-  const pageSize = 8;
+  const pageSize = 4;
   const itemsCount = allUsers ? Math.ceil(allUsers.length / pageSize) : 0;
   const itemsIsArray = isArray(professions);
 
@@ -31,14 +30,12 @@ const Users = () => {
     setCurrentPage(pageIndex);
   };
 
+  useEffect(() => {
+    handlePageChange(prevState => prevState - 1);
+  }, [itemsCount]);
+
   const handleDelete = (userId) => {
-    setCountOnDelete((prevState) => prevState + 1);
     setUsers((prevState) => prevState.filter((user) => user._id !== userId));
-    if (countOnDelete === pageSize && currentPage !== currentPage - 1) {
-      handlePageChange(currentPage - 1);
-      setCountOnDelete(1);
-      setCurrentPage(itemsCount - 1);
-    }
   };
 
   const handleToggleBookmark = (id) => {
@@ -116,6 +113,7 @@ const Users = () => {
               pageSize={pageSize}
               currentPage={currentPage}
               onPageChange={handlePageChange}
+              allUsers={allUsers}
             />
           </div>
         </>
