@@ -31,7 +31,9 @@ const Users = () => {
   };
 
   useEffect(() => {
-    handlePageChange(prevState => prevState - 1);
+    if (currentPage > 1 && currentPage >= itemsCount + 1) {
+      handlePageChange(prevState => prevState - 1);
+    }
   }, [itemsCount]);
 
   const handleDelete = (userId) => {
@@ -52,7 +54,7 @@ const Users = () => {
   };
 
   const clearFilter = () => {
-    setSelectedProf();
+    setProfessions();
   };
 
   const handleProfessionSelect = (item) => {
