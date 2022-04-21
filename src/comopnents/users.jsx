@@ -1,112 +1,138 @@
 import React, { useState, useEffect } from "react";
 import Pagination from "./pagination";
-import User from "./user";
+import UserTable from "./usersTable";
 import SearchStatus from "./searchStatus";
 import api from "../api";
 import { paginate } from "../utils/paginate";
 import GroupList from "./groupList";
-import PropTypes from "prop-types";
-import { isArray } from "lodash";
+import _, { isArray } from "lodash";
+import loaderImg from "../img/loading.png";
 
-const Users = ({ allUsers, onPageChange, currentPage, pageSize, ...rest }) => {
+const Users = () => {
   const [professions, setProfessions] = useState();
   const [selectedProf, setSelectedProf] = useState();
+  const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
+  const [allUsers, setUsers] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 4;
+  const itemsCount = allUsers ? Math.ceil(allUsers.length / pageSize) : 0;
+  const itemsIsArray = isArray(professions);
 
-  const clearFilter = () => {
-    setSelectedProf();
-  };
+  useEffect(() => {
+    api.users.fetchAll().then(data => setUsers(data));
+  }, []);
 
   useEffect(() => {
     api.professions.fetchAll().then((data) => setProfessions(data));
   }, []);
 
-  const itemsIsArray = isArray(professions);
+  const handlePageChange = (pageIndex) => {
+    setCurrentPage(pageIndex);
+  };
+
+  useEffect(() => {
+    if (currentPage > 1 && currentPage >= itemsCount + 1) {
+      handlePageChange(prevState => prevState - 1);
+    }
+  }, [itemsCount]);
+
+  const handleDelete = (userId) => {
+    setUsers((prevState) => prevState.filter((user) => user._id !== userId));
+  };
+
+  const handleToggleBookmark = (id) => {
+    const currentUser = allUsers.find((user) => user._id === id);
+    if (!currentUser.bookmark) {
+      currentUser.bookmark = true;
+      const newUsers = [...allUsers];
+      setUsers(newUsers);
+    } else {
+      currentUser.bookmark = false;
+      const newUsers = [...allUsers];
+      setUsers(newUsers);
+    }
+  };
+
+  const clearFilter = () => {
+    setProfessions();
+  };
 
   const handleProfessionSelect = (item) => {
     setSelectedProf(item);
-    onPageChange(1);
+    handlePageChange(1);
   };
 
-  const filteredUsers = selectedProf
-    ? allUsers.filter((user) => itemsIsArray ? user.profession.name === selectedProf : user.profession === selectedProf)
-    : allUsers;
-  const count = filteredUsers.length;
-  const userCrop = paginate(filteredUsers, currentPage, pageSize);
+  const handleSort = (item) => {
+    setSortBy(item);
+  };
 
-  if (allUsers.length > 0) {
-    return (
-      <>
-        <div className="searchStatus mb-10">
-          <h1>
-            <span className="badge bg-primary">{SearchStatus(allUsers.length)}</span>
-          </h1>
-        </div>
-        <div className="d-flex mt-2">
-          {professions && (
-            <div className="d-flex flex-column flex-shrink-0 p-3">
-              <GroupList
-                items={professions}
-                onItemSelect={handleProfessionSelect}
-                selectedItem={selectedProf}
-                boolInprof={itemsIsArray}
-              />
-              <button
-                className="btn btn-secondary me-3"
-                style={{ width: "100%" }}
-                onClick={clearFilter}
-              >
-                сброс
-              </button>
-            </div>
-          )}
-          <table className="table text-center" style={{ height: "fit-content" }}>
-            <thead>
-              <tr>
-                <th scope="col" style={{ width: "15%" }}>
-                  Имя
-                </th>
-                <th scope="col" style={{ width: "20%" }}>
-                  Качества
-                </th>
-                <th scope="col">Профессия</th>
-                <th scope="col">Встретился, раз</th>
-                <th scope="col">Оценка</th>
-                <th scope="col">Избранное</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              { count > 0
-                ? userCrop.map((user) => (<User key={user._id} {...rest} {...user} />))
-                : <tr><td><h1><span className="badge bg-danger">Ни кто из этой категории с тобой не тусанет</span></h1></td></tr>
-              }
-            </tbody>
-          </table>
-        </div>
-        <div className="d-flex justify-content-center">
-          <Pagination
-            itemsCount={count}
-            pageSize={pageSize}
-            currentPage={currentPage}
-            onPageChange={onPageChange}
-          />
-        </div>
-      </>
-    );
-  } else {
-    return (
-      <h1>
-        <span className="badge bg-danger">{SearchStatus(allUsers.length)}</span>
-      </h1>
-    );
+  if (allUsers) {
+    const filteredUsers = selectedProf
+      ? allUsers.filter((user) => itemsIsArray ? user.profession.name === selectedProf : user.profession === selectedProf)
+      : allUsers;
+    const count = filteredUsers.length;
+    const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
+    const userCrop = paginate(sortedUsers, currentPage, pageSize);
+
+    if (allUsers.length > 0) {
+      return (
+        <>
+          <div className="searchStatus mb-10">
+            <h1>
+              <span className="badge bg-primary">{SearchStatus(allUsers.length)}</span>
+            </h1>
+          </div>
+          <div className="d-flex mt-2">
+            {professions && (
+              <div className="d-flex flex-column flex-shrink-0 p-3">
+                <GroupList
+                  items={professions}
+                  onItemSelect={handleProfessionSelect}
+                  selectedItem={selectedProf}
+                  boolInprof={itemsIsArray}
+                />
+                <button
+                  className="btn btn-secondary me-3"
+                  style={{ width: "100%" }}
+                  onClick={clearFilter}
+                >
+                  сброс
+                </button>
+              </div>
+            )}
+            <UserTable
+              users={userCrop}
+              count={count}
+              selectedSort={sortBy}
+              onSort={handleSort}
+              onDelete={handleDelete}
+              toggleBookmark={handleToggleBookmark}
+            />
+          </div>
+          <div className="d-flex justify-content-center">
+            <Pagination
+              itemsCount={count}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              allUsers={allUsers}
+            />
+          </div>
+        </>
+      );
+    } else {
+      return (
+        <h1>
+          <span className="badge bg-danger">{SearchStatus(allUsers.length)}</span>
+        </h1>
+      );
+    }
   }
-};
-
-Users.propTypes = {
-  allUsers: PropTypes.array.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-  currentPage: PropTypes.number.isRequired,
-  pageSize: PropTypes.number.isRequired
+  return (
+    <div className="loader">
+      <img src={loaderImg} style={{ width: "50px" }} />
+    </div>
+  );
 };
 
 export default Users;
