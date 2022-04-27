@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Pagination from "./pagination";
-import UserTable from "./usersTable";
-import SearchStatus from "./searchStatus";
-import api from "../api";
-import { paginate } from "../utils/paginate";
-import GroupList from "./groupList";
+import Pagination from "../pagination";
+import UserTable from "../usersTable";
+import SearchStatus from "../searchStatus";
+import api from "../../api";
+import { paginate } from "../../utils/paginate";
+import GroupList from "../groupList";
 import _, { isArray } from "lodash";
-import loaderImg from "../img/loading.png";
+import Loader from "../loader";
 
 const Users = () => {
   const [professions, setProfessions] = useState();
@@ -20,9 +20,6 @@ const Users = () => {
 
   useEffect(() => {
     api.users.fetchAll().then(data => setUsers(data));
-  }, []);
-
-  useEffect(() => {
     api.professions.fetchAll().then((data) => setProfessions(data));
   }, []);
 
@@ -54,7 +51,7 @@ const Users = () => {
   };
 
   const clearFilter = () => {
-    setProfessions();
+    setSelectedProf();
   };
 
   const handleProfessionSelect = (item) => {
@@ -129,9 +126,7 @@ const Users = () => {
     }
   }
   return (
-    <div className="loader">
-      <img src={loaderImg} style={{ width: "50px" }} />
-    </div>
+    <Loader />
   );
 };
 

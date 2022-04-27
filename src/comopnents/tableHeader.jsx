@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 const TableHeader = ({ onSort, selectedSort, columns, count }) => {
   const [toggle, setToggle] = useState(0);
+
   const handleSort = (item, e) => {
     const handlePrintArrow = (e, item) => {
       const self = e.currentTarget;
