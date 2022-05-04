@@ -14,8 +14,15 @@ const UserTable = ({
   count
 }) => {
   const columns = {
-    name: { path: "name", name: "Имя", component: (user) => <User {...user} /> },
-    qualities: { name: "Качества", component: (user) => <QualitiesList qualities={user.qualities} /> },
+    name: {
+      path: "name",
+      name: "Имя",
+      component: (user) => <User {...user} />
+    },
+    qualities: {
+      name: "Качества",
+      component: (user) => <QualitiesList qualities={user.qualities} />
+    },
     professions: { path: "profession.name", name: "Профессия" },
     completedMeetings: { path: "completedMeetings", name: "Встретился, раз" },
     rate: { path: "rate", name: "Оценка" },
@@ -23,15 +30,15 @@ const UserTable = ({
       path: "bookmark",
       name: "Избранное",
       component: (user) => (
-        <Bookmark status={user.bookmark} onChangeIcon={() => toggleBookmark(user._id)} />
+        <Bookmark
+          status={user.bookmark}
+          onChangeIcon={() => toggleBookmark(user._id)}
+        />
       )
     },
     delete: {
       component: (user) => (
-        <button
-          className="btn btn-danger"
-          onClick={() => onDelete(user._id)}
-        >
+        <button className="btn btn-danger" onClick={() => onDelete(user._id)}>
           Delete
         </button>
       )

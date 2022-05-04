@@ -8,8 +8,8 @@ const Table = ({ onSort, selectedSort, columns, data, count, children }) => {
     <table className="table text-center" style={{ height: "fit-content" }}>
       {children || (
         <>
-          <TableHeader {...{ onSort, selectedSort, columns, count }}/>
-          <TableBody {...{ columns, data, count }}/>
+          <TableHeader {...{ onSort, selectedSort, columns, count }} />
+          <TableBody {...{ columns, data, count }} />
         </>
       )}
     </table>
