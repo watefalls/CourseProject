@@ -71,17 +71,20 @@ const Users = () => {
   };
 
   if (allUsers) {
+    // search
     const searchedUsers = allUsers.filter((user) =>
       user.name.toLowerCase().includes(search.toLowerCase())
     );
 
     function printUsers() {
+      // выводим по условию
       if (searchedUsers.length !== 0) {
         return searchedUsers;
       } else {
         return allUsers;
       }
     }
+
     const filteredUsers = selectedProf
       ? allUsers.filter((user) =>
           itemsIsArray
