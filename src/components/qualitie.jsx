@@ -1,11 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
+import badgesClassName from "../utils/badgeClassName";
 
 const Qualitie = ({ color, name }) => {
-  const badgesClassName = (currentColor) => {
-    return `badge bg-${currentColor} m-2 p-2`;
-  };
-
   return (
     <>
       <span className={badgesClassName(color)}> {name} </span>

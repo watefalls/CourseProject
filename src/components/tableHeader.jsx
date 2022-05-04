@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 const TableHeader = ({ onSort, selectedSort, columns, count }) => {
   const [toggle, setToggle] = useState(0);
+
   const handleSort = (item, e) => {
     const handlePrintArrow = (e, item) => {
       const self = e.currentTarget;
@@ -44,15 +45,23 @@ const TableHeader = ({ onSort, selectedSort, columns, count }) => {
   return (
     <thead>
       <tr>
-        {Object.keys(columns).map(column => (
+        {Object.keys(columns).map((column) => (
           <th
             key={column}
-            onClick={ columns[column].path ? (e) => handleSort(columns[column].path, e) : undefined}
+            onClick={
+              columns[column].path
+                ? (e) => handleSort(columns[column].path, e)
+                : undefined
+            }
             {...{ role: columns[column].path ? "button" : "" }}
             scope="col"
             className={columns[column].name === "Качества" ? "qualities" : ""}
             onMouseLeave={(e) => handleRemoveArrow(e, column)}
-            style={columns[column].name === "Качества" ? { width: "18%" } : { width: "16%" }}
+            style={
+              columns[column].name === "Качества"
+                ? { width: "30%" }
+                : { width: "16%" }
+            }
           >
             {columns[column].name}
             <i className="bi bi-caret-up-fill"></i>
