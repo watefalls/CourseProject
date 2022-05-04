@@ -60,7 +60,6 @@ const Users = () => {
     handlePageChange(1);
     setSearch("");
   };
-
   const handleSort = (item) => {
     setSortBy(item);
   };
@@ -94,7 +93,6 @@ const Users = () => {
     const count = filteredUsers.length;
     const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
     const userCrop = paginate(sortedUsers, currentPage, pageSize);
-    console.log(sortedUsers);
 
     if (allUsers.length > 0) {
       return (
@@ -139,6 +137,7 @@ const Users = () => {
                 onSort={handleSort}
                 onDelete={handleDelete}
                 toggleBookmark={handleToggleBookmark}
+                searchedusers={search}
               />
             </div>
           </div>
