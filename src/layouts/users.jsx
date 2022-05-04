@@ -71,14 +71,12 @@ const Users = () => {
   };
 
   if (allUsers) {
-    // search
     const searchedUsers = allUsers.filter((user) =>
       user.name.toLowerCase().includes(search.toLowerCase())
     );
 
     function printUsers() {
-      // выводим по условию
-      if (searchedUsers.length !== 0) {
+      if (searchedUsers) {
         return searchedUsers;
       } else {
         return allUsers;
@@ -93,9 +91,10 @@ const Users = () => {
         )
       : printUsers();
 
-    const count = printUsers().length;
+    const count = filteredUsers.length;
     const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
     const userCrop = paginate(sortedUsers, currentPage, pageSize);
+    console.log(sortedUsers);
 
     if (allUsers.length > 0) {
       return (
