@@ -9,13 +9,7 @@ import RadioField from "../common/form/radioField";
 import SelectField from "../common/form/selectField";
 
 const EditUser = () => {
-  const [data, setData] = useState({
-    email: "",
-    name: "",
-    profession: "",
-    sex: "male",
-    qualities: []
-  });
+  const [data, setData] = useState({ qualities: [] });
   const params = useParams();
   const history = useHistory();
   const { id } = params;
@@ -50,6 +44,7 @@ const EditUser = () => {
       }
     }
   };
+
   const getQualities = (elements) => {
     const qualitiesArray = [];
     for (const elem of elements) {
@@ -101,6 +96,9 @@ const EditUser = () => {
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
+  if (data) {
+    console.log(data.qualities);
+  }
 
   const isValid = Object.keys(errors).length === 0;
 
@@ -111,9 +109,8 @@ const EditUser = () => {
     if (typeof data.profession !== "object") {
       data.profession = getProfessionById(data.profession);
     }
-    if (data.qualities !== "") {
-      data.qualities = getQualities(data.qualities);
-    }
+    data.qualities = getQualities(data.qualities);
+
     history.push(`/users/${id}`);
     api.users.update(id, data);
   };
@@ -168,6 +165,7 @@ const EditUser = () => {
                 name="qualities"
                 label="Выберите ваши качества"
                 defaultValue={data.qualities}
+                error={errors.qualities}
               />
 
               <button disabled={!isValid} className="btn btn-primary">
