@@ -60,7 +60,6 @@ const Users = () => {
     handlePageChange(1);
     setSearch("");
   };
-
   const handleSort = (item) => {
     setSortBy(item);
   };
@@ -76,12 +75,13 @@ const Users = () => {
     );
 
     function printUsers() {
-      if (searchedUsers.length !== 0) {
+      if (searchedUsers) {
         return searchedUsers;
       } else {
         return allUsers;
       }
     }
+
     const filteredUsers = selectedProf
       ? allUsers.filter((user) =>
           itemsIsArray
@@ -90,7 +90,7 @@ const Users = () => {
         )
       : printUsers();
 
-    const count = printUsers().length;
+    const count = filteredUsers.length;
     const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
     const userCrop = paginate(sortedUsers, currentPage, pageSize);
 
@@ -137,6 +137,7 @@ const Users = () => {
                 onSort={handleSort}
                 onDelete={handleDelete}
                 toggleBookmark={handleToggleBookmark}
+                searchedusers={search}
               />
             </div>
           </div>

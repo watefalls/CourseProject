@@ -17,19 +17,29 @@ const TableBody = ({ data, columns, count }) => {
   if (count > 0) {
     return (
       <tbody>
-        {data.map(item => (
+        {data.map((item) => (
           <tr key={item._id}>
-            {Object.keys(columns).map(column => (
-              <td key={column}>
-                {renderContent(item, column)}
-              </td>
+            {Object.keys(columns).map((column) => (
+              <td key={column}>{renderContent(item, column)}</td>
             ))}
           </tr>
         ))}
       </tbody>
     );
   } else {
-    return <tbody><tr><td><h1><span className="badge bg-danger">Ни кто из этой категории с тобой не тусанет</span></h1></td></tr></tbody>;
+    return (
+      <tbody>
+        <tr>
+          <td>
+            <h1>
+              <span className="badge bg-danger">
+                {/* Ни кто из этой категории с тобой не тусанет */}
+              </span>
+            </h1>
+          </td>
+        </tr>
+      </tbody>
+    );
   }
 };
 
