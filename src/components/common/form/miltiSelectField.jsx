@@ -12,6 +12,17 @@ const MultiSelectField = ({ options, onChange, name, label, defaultValue }) => {
     onChange({ name: name, value });
   };
 
+  const defaultValueFormat = (value) => {
+    const format = [];
+    for (const val of value) {
+      format.push({
+        value: val.id,
+        label: val.name
+      });
+    }
+    return format;
+  };
+
   return (
     <div className="mb-4">
       <label>{label}</label>
@@ -21,7 +32,7 @@ const MultiSelectField = ({ options, onChange, name, label, defaultValue }) => {
         classNamePrefix="select"
         onChange={handleChange}
         options={optionsArray}
-        defaultValue={defaultValue[0].name}
+        defaultValue={defaultValueFormat(defaultValue)}
         name={name}
         closeMenuOnSelect={false}
       />
