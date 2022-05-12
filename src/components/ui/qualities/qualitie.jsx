@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import badgesClassName from "../utils/badgeClassName";
+import badgesClassName from "../../../utils/badgeClassName";
 
 const Qualitie = ({ color, name }) => {
   return (
