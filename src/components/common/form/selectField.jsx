@@ -35,9 +35,7 @@ const SelectField = ({
         value={value}
         name={name}
       >
-        <option disabled value="">
-          {defaultOption}
-        </option>
+        <option disabled>{defaultOption}</option>
         {optionsArray &&
           optionsArray.map((option) => (
             <option value={option.value} key={option.value}>

@@ -21,7 +21,7 @@ const MultiSelectField = ({ options, onChange, name, label, defaultValue }) => {
         classNamePrefix="select"
         onChange={handleChange}
         options={optionsArray}
-        defaultValue={defaultValue}
+        defaultValue={defaultValue[0].name}
         name={name}
         closeMenuOnSelect={false}
       />

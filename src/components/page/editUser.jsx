@@ -122,7 +122,7 @@ const EditUser = () => {
     validate();
   }, [data]);
 
-  if (data) {
+  if (profession) {
     return (
       <div className="container mt-5">
         <div className="row">
@@ -147,9 +147,9 @@ const EditUser = () => {
                 onChange={handleChange}
                 options={profession}
                 name="profession"
-                defaultOption="Choose.."
+                defaultOption={data.profession.name}
                 error={errors.profession}
-                value={data.profession}
+                value={data.profession.name}
               />
               <RadioField
                 onChange={handleChange}
