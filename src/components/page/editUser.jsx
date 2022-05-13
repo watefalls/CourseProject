@@ -96,9 +96,6 @@ const EditUser = () => {
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
-  if (data) {
-    console.log(data.qualities);
-  }
 
   const isValid = Object.keys(errors).length === 0;
 
