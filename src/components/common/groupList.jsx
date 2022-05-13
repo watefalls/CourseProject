@@ -11,29 +11,32 @@ const GroupList = ({
 }) => {
   return (
     <ul className="list-group">
-      {
-        !boolInprof
-          ? Object.keys(items).map((item) => (
+      {!boolInprof
+        ? Object.keys(items).map((item) => (
             <li
               key={items[item][valueProperty]}
-              className={"list-group-item" + (items[item] === selectedItem ? " active" : "")}
+              className={
+                "list-group-item" +
+                (items[item] === selectedItem ? " active" : "")
+              }
               onClick={() => onItemSelect(items[item])}
               role="button"
             >
               {items[item][contentProperty]}
             </li>
           ))
-          : items.map(item => (
+        : items.map((item) => (
             <li
               key={item[valueProperty]}
-              className={"list-group-item" + (item === selectedItem ? " active" : "")}
+              className={
+                "list-group-item" + (item === selectedItem ? " active" : "")
+              }
               onClick={() => onItemSelect(item[contentProperty])}
               role="button"
             >
               {item[contentProperty]}
             </li>
-          ))
-      }
+          ))}
     </ul>
   );
 };

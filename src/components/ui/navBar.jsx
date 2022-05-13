@@ -18,13 +18,24 @@ const NavBar = () => {
   return (
     <ul className="nav" style={styled.list}>
       <li className="nav-item" style={styled.item}>
-        <Link className="nav-link active" aria-current="page" style={styled.link} to="/main">Main</Link>
+        <Link
+          className="nav-link active"
+          aria-current="page"
+          style={styled.link}
+          to="/main"
+        >
+          Main
+        </Link>
       </li>
       <li className="nav-item" style={styled.item}>
-        <Link className="nav-link" style={styled.link} to="/login">Login</Link>
+        <Link className="nav-link" style={styled.link} to="/login">
+          Login
+        </Link>
       </li>
       <li className="nav-item" style={styled.item}>
-        <Link className="nav-link" style={styled.link} to="/users">Users</Link>
+        <Link className="nav-link" style={styled.link} to="/users">
+          Users
+        </Link>
       </li>
     </ul>
   );
