@@ -8,34 +8,39 @@ const SelectField = ({
   defaultOption,
   options,
   error,
-  name
+  ...rest
 }) => {
-  const optionsArray =
-    !Array.isArray(options) && typeof options === "object"
-      ? Object.values(options)
-      : options;
-
+  const handleChange = ({ target }) => {
+    onChange({ name: target.name, value: target.value });
+  };
   const getInputClasses = () => {
     return "form-select" + (error ? " is-invalid" : "");
   };
 
-  const handleChange = ({ target }) => {
-    onChange({ name: target.name, value: target.value });
-  };
+  const optionsArray =
+    !Array.isArray(options) && typeof options === "object"
+      ? Object.keys(options).map((optionName) => ({
+          name: options[optionName].name,
+          value: options[optionName]._id
+        }))
+      : options;
 
   return (
     <div className="mb-4">
-      <label htmlFor={name} className="form-label">
+      <label htmlFor="validationCustom04" className="form-label">
         {label}
       </label>
       <select
         className={getInputClasses()}
-        id={name}
-        onChange={handleChange}
+        id="validationCustom04"
+        name={rest.name}
         value={value}
-        name={name}
+        onChange={handleChange}
+        {...rest}
       >
-        <option disabled>{defaultOption}</option>
+        <option disabled value="">
+          {defaultOption}
+        </option>
         {optionsArray &&
           optionsArray.map((option) => (
             <option value={option.value} key={option.value}>
@@ -47,15 +52,13 @@ const SelectField = ({
     </div>
   );
 };
-
 SelectField.propTypes = {
-  label: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  onChange: PropTypes.func,
   defaultOption: PropTypes.string,
-  options: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  label: PropTypes.string,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
   error: PropTypes.string,
-  name: PropTypes.string
+  options: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
-export default SelectField;
+export default React.memo(SelectField);

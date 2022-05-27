@@ -19,7 +19,7 @@ const RegisterForm = () => {
 
   const [errors, setErrors] = useState({});
   const [qualities, setQualities] = useState([]);
-  const [professions, setProfession] = useState();
+  const [profession, setProfession] = useState();
 
   useEffect(() => {
     api.professions.fetchAll().then((data) => {
@@ -82,7 +82,7 @@ const RegisterForm = () => {
   };
 
   const getProfessionById = (id) => {
-    for (const prof of professions) {
+    for (const prof of profession) {
       if (prof.value === id) {
         return { _id: prof.value, name: prof.label };
       }
@@ -136,7 +136,7 @@ const RegisterForm = () => {
       <SelectField
         label="Выберите вашу профессию"
         onChange={handleChange}
-        options={professions}
+        options={profession}
         name="profession"
         defaultOption="Choose.."
         error={errors.profession}

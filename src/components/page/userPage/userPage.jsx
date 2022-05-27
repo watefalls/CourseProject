@@ -1,59 +1,39 @@
 import React, { useState, useEffect } from "react";
 import Loader from "../../ui/loader";
 import api from "../../../api";
-import badgesClassName from "../../../utils/badgeClassName";
-import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
+import UserCardQualities from "./userCardQualities";
+import CardUser from "./cardUser";
+import UserCardMeet from "./userCardMeet";
+import CommentsList from "./UserComents/commentsList";
 
 const UserPage = ({ id }) => {
   const [user, setUser] = useState();
-  const history = useHistory();
 
   useEffect(() => {
     api.users.getById(id).then((user) => setUser(user));
   }, []);
 
-  const handleEdit = (id) => {
-    history.push(`${id}/edit`);
-  };
-
   if (user) {
-    const { _id, name, profession, qualities, completedMeetings, rate } = user;
+    const { _id } = user;
 
     return (
-      <div style={styled.block} key={_id} className="user__info">
-        <h1>{name}</h1>
-        <span style={styled.font}>{"Профессия: " + profession.name}</span>
-        <ul
-          style={{ listStyle: "none", display: "flex", margin: 0, padding: 0 }}
-        >
-          {qualities.map((qual) => (
-            <li key={qual._id}>
-              <span className={badgesClassName(qual.color)}>{qual.name}</span>
-            </li>
-          ))}
-        </ul>
-        <span style={styled.font && { display: "block" }}>
-          {"Встретился раз: " + completedMeetings}
-        </span>
-        <span style={styled.font}>{"Рэйтинг :" + rate}</span>
-        <button
-          style={{ marginTop: "20px", display: "block" }}
-          className="btn btn-dark"
-          onClick={() => handleEdit(id)}
-        >
-          Изменить
-        </button>
+      <div className="container" key={_id}>
+        <div className="row gutters-sm">
+          <div className="col-md-4 mb-3">
+            <CardUser {...user} />
+            <UserCardQualities {...user} />
+            <UserCardMeet {...user} />
+          </div>
+          <div className="col-md-8">
+            <CommentsList />
+          </div>
+        </div>
       </div>
     );
   } else {
     return <Loader />;
   }
-};
-
-const styled = {
-  block: { display: "block", padding: "10px" },
-  font: { fontSize: "20px", fontWeight: "bold" }
 };
 
 UserPage.propTypes = {
