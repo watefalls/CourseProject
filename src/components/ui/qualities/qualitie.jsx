@@ -1,18 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
 import badgesClassName from "../../../utils/badgeClassName";
+import { useQuality } from "../../../hooks/useQuality";
+import Loader from "../loader";
 
-const Qualitie = ({ color, name }) => {
-  return (
-    <>
-      <span className={badgesClassName(color)}> {name} </span>
-    </>
-  );
+const Qualitie = ({ id }) => {
+  const { isLoading, getQuality } = useQuality();
+  const qual = getQuality(id);
+  if (!isLoading) {
+    return <span className={badgesClassName(qual.color)}>{qual.name}</span>;
+  } else return <Loader />;
 };
 
 Qualitie.propTypes = {
-  color: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired
+  id: PropTypes.string
 };
 
 export default Qualitie;

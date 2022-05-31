@@ -6,14 +6,14 @@ const QualitiesList = ({ qualities }) => {
   return (
     <>
       {qualities.map((qualitie) => (
-        <Qualitie key={qualitie._id} {...qualitie} />
+        <Qualitie key={qualitie} id={qualitie} />
       ))}
     </>
   );
 };
 
 QualitiesList.propTypes = {
-  qualities: PropTypes.array.isRequired
+  qualities: PropTypes.array
 };
 
 export default QualitiesList;

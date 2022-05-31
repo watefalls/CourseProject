@@ -7,20 +7,20 @@ import { paginate } from "../../../utils/paginate";
 import GroupList from "../../common/groupList";
 import _ from "lodash";
 import Loader from "../../ui/loader";
+import { useUsers } from "../../../hooks/useUsers";
 
 const UserListPage = () => {
+  const { users } = useUsers();
   const [professions, setProfessions] = useState();
   const [selectedProf, setSelectedProf] = useState();
   const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
-  const [allUsers, setUsers] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const pageSize = 4;
-  const itemsCount = allUsers ? Math.ceil(allUsers.length / pageSize) : 0;
+  const itemsCount = users ? Math.ceil(users.length / pageSize) : 0;
   const itemsIsArray = Array.isArray(professions);
 
   useEffect(() => {
-    api.users.fetchAll().then((data) => setUsers(data));
     api.professions.fetchAll().then((data) => setProfessions(data));
   }, []);
 
@@ -35,20 +35,13 @@ const UserListPage = () => {
   }, [itemsCount]);
 
   const handleDelete = (userId) => {
-    setUsers((prevState) => prevState.filter((user) => user._id !== userId));
+    // setUsers((prevState) => prevState.filter((user) => user._id !== userId));
+    console.log(userId);
   };
 
   const handleToggleBookmark = (id) => {
-    const currentUser = allUsers.find((user) => user._id === id);
-    if (!currentUser.bookmark) {
-      currentUser.bookmark = true;
-      const newUsers = [...allUsers];
-      setUsers(newUsers);
-    } else {
-      currentUser.bookmark = false;
-      const newUsers = [...allUsers];
-      setUsers(newUsers);
-    }
+    const currentUser = users.find((user) => user._id === id);
+    currentUser.status = true;
   };
 
   const clearFilter = () => {
@@ -70,17 +63,17 @@ const UserListPage = () => {
     clearFilter();
   };
 
-  if (allUsers) {
-    const searchedUsers = allUsers.filter((user) =>
+  if (users) {
+    const searchedUsers = users.filter((user) =>
       user.name.toLowerCase().includes(search.toLowerCase())
     );
 
     const filteredUsers = search
-      ? allUsers.filter((user) =>
+      ? users.filter((user) =>
           user.name.toLowerCase().includes(search.toLowerCase())
         )
       : selectedProf
-      ? allUsers.filter((user) =>
+      ? users.filter((user) =>
           !itemsIsArray
             ? user.profession.name === selectedProf.name
             : user.profession === selectedProf.name
@@ -91,7 +84,7 @@ const UserListPage = () => {
     const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
     const userCrop = paginate(sortedUsers, currentPage, pageSize);
 
-    if (allUsers.length > 0) {
+    if (users.length > 0) {
       return (
         <>
           <div className="searchStatus mb-10">
@@ -143,7 +136,6 @@ const UserListPage = () => {
               pageSize={pageSize}
               currentPage={currentPage}
               onPageChange={handlePageChange}
-              allUsers={allUsers}
             />
           </div>
         </>
@@ -151,9 +143,7 @@ const UserListPage = () => {
     } else {
       return (
         <h1>
-          <span className="badge bg-danger">
-            {SearchStatus(allUsers.length)}
-          </span>
+          <span className="badge bg-danger">{SearchStatus(users.length)}</span>
         </h1>
       );
     }

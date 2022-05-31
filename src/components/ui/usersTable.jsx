@@ -4,6 +4,7 @@ import Bookmark from "../common/bookmark";
 import QualitiesList from "./qualities/qualitiesList";
 import Table from "../common/table";
 import User from "../common/table/user";
+import Profession from "./profession";
 
 const UserTable = ({
   users,
@@ -23,17 +24,17 @@ const UserTable = ({
       name: "Качества",
       component: (user) => <QualitiesList qualities={user.qualities} />
     },
-    professions: { path: "profession.name", name: "Профессия" },
+    professions: {
+      name: "Профессия",
+      component: (user) => <Profession id={user.profession} />
+    },
     completedMeetings: { path: "completedMeetings", name: "Встретился, раз" },
     rate: { path: "rate", name: "Оценка" },
     bookmark: {
       path: "bookmark",
       name: "Избранное",
       component: (user) => (
-        <Bookmark
-          status={user.bookmark}
-          onChangeIcon={() => toggleBookmark(user._id)}
-        />
+        <Bookmark onChangeIcon={() => toggleBookmark(user._id)} />
       )
     },
     delete: {
