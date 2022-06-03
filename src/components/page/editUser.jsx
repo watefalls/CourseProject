@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import TextField from "../common/form/textField";
 import { validator } from "../../utils/validator";
 import { useParams, useHistory } from "react-router-dom";
-import api from "../../api";
+// import api from "../../api";
 import Loader from "../ui/loader";
 import MultiSelectField from "../common/form/miltiSelectField";
 import RadioField from "../common/form/radioField";
@@ -10,6 +10,7 @@ import SelectField from "../common/form/selectField";
 import { useProfession } from "../../hooks/useProfession";
 import { useQuality } from "../../hooks/useQuality";
 import { useUsers } from "../../hooks/useUsers";
+// import httpService from "../../services/http.service";
 
 const EditUser = () => {
   const params = useParams();
@@ -18,12 +19,12 @@ const EditUser = () => {
   const { usersGetById } = useUsers();
   const { professions, isLoading: loadProf } = useProfession();
   const { qualities, isLoading: loadQual } = useQuality();
-  const users = usersGetById(id);
+  const user = usersGetById(id);
+  const initialState = user || {};
   const [errors, setErrors] = useState({});
-  const [data, setData] = useState(users || {});
+  const [data, setData] = useState(initialState);
   // const [profession, setProfession] = useState();
-  // const [qualitiyList, setQualities] = useState([]);
-  console.log(data);
+  // const [qualitiyList, setQualities] = useState([])
 
   useEffect(() => {
     // api.users.getById(id).then((data) => setData(data));
@@ -43,30 +44,6 @@ const EditUser = () => {
     //   setQualities(qualitiesList);
     // });
   }, []);
-
-  const getProfessionById = (id) => {
-    for (const prof of professions) {
-      if (prof.value === id) {
-        return { _id: prof.value, name: prof.label };
-      }
-    }
-  };
-
-  const getQualities = (elements) => {
-    const qualitiesArray = [];
-    for (const elem of elements) {
-      for (const quality in qualities) {
-        if (elem.value === qualities[quality].value) {
-          qualitiesArray.push({
-            _id: qualities[quality].value,
-            name: qualities[quality].label,
-            color: qualities[quality].color
-          });
-        }
-      }
-    }
-    return qualitiesArray;
-  };
 
   const validatorConfig = {
     name: {
@@ -110,24 +87,46 @@ const EditUser = () => {
 
   const isValid = Object.keys(errors).length === 0;
 
-  const handleUpdate = (e) => {
-    e.preventDefault();
-    const isValid = validate();
-    if (!isValid) return;
-    if (typeof data.profession !== "object") {
-      data.profession = getProfessionById(data.profession);
-    }
-    data.qualities = getQualities(data.qualities);
-
-    history.push(`/users/${id}`);
-    api.users.update(id, data);
-  };
-
   useEffect(() => {
     validate();
   }, [data]);
 
   if (!loadProf && !loadQual) {
+    const getProfessionById = (id) => {
+      for (const prof of professions) {
+        if (prof.value === id) {
+          return { _id: prof.value, name: prof.label };
+        }
+      }
+    };
+
+    const getQualities = (elements) => {
+      const qualitiesArray = [];
+      for (const elem of elements) {
+        for (const quality in qualities) {
+          if (elem.value === qualities[quality].value) {
+            qualitiesArray.push({
+              _id: qualities[quality].value,
+              name: qualities[quality].label,
+              color: qualities[quality].color
+            });
+          }
+        }
+      }
+      return qualitiesArray;
+    };
+
+    const handleUpdate = (e) => {
+      e.preventDefault();
+      const isValid = validate();
+      if (!isValid) return;
+      // data.profession = getProfessionById(data.profession);
+      data.qualities = getQualities(data.qualities);
+      console.log(getProfessionById(data.profession));
+      history.push(`/users/${id}`);
+      // httpService.put(`user/${id}`, data);
+    };
+
     return (
       <>
         <div className="btnback position-absolute">
