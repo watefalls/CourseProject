@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const Bookmark = ({ status, onChangeIcon }) => {
+const Bookmark = ({ onChangeIcon }) => {
   if (!status) {
     return (
       <div className="bookmark" onClick={onChangeIcon}>
@@ -18,7 +18,6 @@ const Bookmark = ({ status, onChangeIcon }) => {
 };
 
 Bookmark.propTypes = {
-  status: PropTypes.bool.isRequired,
   onChangeIcon: PropTypes.func.isRequired
 };
 
