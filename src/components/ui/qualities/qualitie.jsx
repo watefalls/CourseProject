@@ -9,7 +9,8 @@ const Qualitie = ({ id }) => {
   const qual = getQuality(id);
   if (!isLoading) {
     return <span className={badgesClassName(qual.color)}>{qual.name}</span>;
-  } else return <Loader />;
+  }
+  return <Loader />;
 };
 
 Qualitie.propTypes = {
