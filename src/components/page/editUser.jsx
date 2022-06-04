@@ -107,9 +107,6 @@ const EditUser = () => {
       e.preventDefault();
       const isValid = validate();
       if (!isValid) return;
-
-      // data.profession = getProfessionById(data.profession);
-      // data.qualities = getQualities(data.qualities);
       history.push(`/users/${id}`);
       // eslint-disable-next-line no-unused-vars
       const { profession, qualities } = data;
