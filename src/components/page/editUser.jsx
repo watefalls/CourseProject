@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import TextField from "../common/form/textField";
 import { validator } from "../../utils/validator";
 import { useParams, useHistory } from "react-router-dom";
-// import api from "../../api";
 import Loader from "../ui/loader";
 import MultiSelectField from "../common/form/miltiSelectField";
 import RadioField from "../common/form/radioField";
@@ -10,40 +9,28 @@ import SelectField from "../common/form/selectField";
 import { useProfession } from "../../hooks/useProfession";
 import { useQuality } from "../../hooks/useQuality";
 import { useUsers } from "../../hooks/useUsers";
-// import httpService from "../../services/http.service";
+import httpService from "../../services/http.service";
 
 const EditUser = () => {
   const params = useParams();
   const history = useHistory();
   const { id } = params;
   const { usersGetById } = useUsers();
-  const { professions, isLoading: loadProf } = useProfession();
+  const { professions, isLoading: loadProf, getProfession } = useProfession();
   const { qualities, isLoading: loadQual } = useQuality();
   const user = usersGetById(id);
   const initialState = user || {};
   const [errors, setErrors] = useState({});
   const [data, setData] = useState(initialState);
-  // const [profession, setProfession] = useState();
-  // const [qualitiyList, setQualities] = useState([])
+  const profList = professions.map((prof) => ({
+    label: prof.name,
+    value: prof._id
+  }));
 
-  useEffect(() => {
-    // api.users.getById(id).then((data) => setData(data));
-    // api.professions.fetchAll().then((data) => {
-    //   const professionsList = Object.keys(data).map((professionName) => ({
-    //     label: data[professionName].name,
-    //     value: data[professionName]._id
-    //   }));
-    //   setProfession(professionsList);
-    // });
-    // api.qualities.fetchAll().then((data) => {
-    //   const qualitiesList = Object.keys(data).map((optionName) => ({
-    //     label: data[optionName].name,
-    //     value: data[optionName]._id,
-    //     color: data[optionName].color
-    //   }));
-    //   setQualities(qualitiesList);
-    // });
-  }, []);
+  const qualList = qualities.map((qual) => ({
+    label: qual.name,
+    value: qual._id
+  }));
 
   const validatorConfig = {
     name: {
@@ -120,11 +107,17 @@ const EditUser = () => {
       e.preventDefault();
       const isValid = validate();
       if (!isValid) return;
+
       // data.profession = getProfessionById(data.profession);
-      data.qualities = getQualities(data.qualities);
-      console.log(getProfessionById(data.profession));
+      // data.qualities = getQualities(data.qualities);
       history.push(`/users/${id}`);
-      // httpService.put(`user/${id}`, data);
+      // eslint-disable-next-line no-unused-vars
+      const { profession, qualities } = data;
+      httpService.put(`user/${id}`, {
+        ...data,
+        profession: getProfessionById(data.profession),
+        qualities: getQualities(data.qualities)
+      });
     };
 
     return (
@@ -159,9 +152,9 @@ const EditUser = () => {
                 <SelectField
                   label="Выберите вашу профессию"
                   onChange={handleChange}
-                  options={professions}
+                  options={profList}
                   name="profession"
-                  defaultOption={data.profession.label}
+                  defaultOption={getProfession(data.profession).name}
                   error={errors.profession}
                   value={data.profession}
                 />
@@ -177,7 +170,7 @@ const EditUser = () => {
                   label="Выберите ваш пол"
                 />
                 <MultiSelectField
-                  options={qualities}
+                  options={qualList}
                   onChange={handleChange}
                   name="qualities"
                   label="Выберите ваши качества"

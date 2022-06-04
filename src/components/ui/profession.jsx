@@ -6,11 +6,8 @@ import Loader from "./loader";
 const Profession = ({ id }) => {
   const { isLoading, getProfession } = useProfession();
   const prof = getProfession(id);
-  if (!isLoading) {
-    return <p>{prof.name}</p>;
-  } else {
-    return <Loader />;
-  }
+  if (!isLoading) return <p>{prof.name}</p>;
+  return <Loader />;
 };
 
 Profession.propTypes = {
