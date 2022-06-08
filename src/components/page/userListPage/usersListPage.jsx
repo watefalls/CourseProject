@@ -2,27 +2,22 @@ import React, { useState, useEffect } from "react";
 import Pagination from "../../common/pagination";
 import UserTable from "../../ui/usersTable";
 import SearchStatus from "../../ui/searchStatus";
-import api from "../../../api";
 import { paginate } from "../../../utils/paginate";
 import GroupList from "../../common/groupList";
 import _ from "lodash";
 import Loader from "../../ui/loader";
 import { useUsers } from "../../../hooks/useUsers";
+import { useProfession } from "../../../hooks/useProfession";
 
 const UserListPage = () => {
   const { users } = useUsers();
-  const [professions, setProfessions] = useState();
+  const { professions, getProfession } = useProfession();
   const [selectedProf, setSelectedProf] = useState();
   const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const pageSize = 4;
   const itemsCount = users ? Math.ceil(users.length / pageSize) : 0;
-  const itemsIsArray = Array.isArray(professions);
-
-  useEffect(() => {
-    api.professions.fetchAll().then((data) => setProfessions(data));
-  }, []);
 
   const handlePageChange = (pageIndex) => {
     setCurrentPage(pageIndex);
@@ -64,19 +59,19 @@ const UserListPage = () => {
   };
 
   if (users) {
-    const searchedUsers = users.filter((user) =>
-      user.name.toLowerCase().includes(search.toLowerCase())
+    const searchedUsers = users.filter(
+      (user) =>
+        user.name && user.name.toLowerCase().includes(search.toLowerCase())
     );
 
     const filteredUsers = search
-      ? users.filter((user) =>
-          user.name.toLowerCase().includes(search.toLowerCase())
+      ? users.filter(
+          (user) =>
+            user.name && user.name.toLowerCase().includes(search.toLowerCase())
         )
       : selectedProf
-      ? users.filter((user) =>
-          !itemsIsArray
-            ? user.profession.name === selectedProf.name
-            : user.profession === selectedProf.name
+      ? users.filter(
+          (user) => getProfession(user.profession).name === selectedProf
         )
       : searchedUsers;
 
@@ -101,7 +96,7 @@ const UserListPage = () => {
                   items={professions}
                   onItemSelect={handleProfessionSelect}
                   selectedItem={selectedProf}
-                  boolInprof={itemsIsArray}
+                  boolInprof={professions}
                 />
                 <button
                   className="btn btn-secondary me-3"
@@ -114,7 +109,7 @@ const UserListPage = () => {
             )}
             <div className="w-100 mt-3">
               <input
-                type="email"
+                type="text"
                 className="form-control"
                 value={search}
                 placeholder="Search users"
