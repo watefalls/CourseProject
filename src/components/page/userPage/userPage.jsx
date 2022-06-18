@@ -7,6 +7,7 @@ import CardUser from "./cardUser";
 import UserCardMeet from "./userCardMeet";
 import CommentsList from "./UserComents/commentsList";
 import { useUsers } from "../../../hooks/useUsers";
+import { ComentsProvider } from "../../../hooks/useComents";
 
 const UserPage = ({ id }) => {
   const { usersGetById } = useUsers();
@@ -17,12 +18,14 @@ const UserPage = ({ id }) => {
       <div className="container" key={id}>
         <div className="row gutters-sm">
           <div className="col-md-4 mb-3">
-            <CardUser {...user} />
+            <CardUser user={user} />
             <UserCardQualities {...user} />
             <UserCardMeet {...user} />
           </div>
           <div className="col-md-8">
-            <CommentsList />
+            <ComentsProvider>
+              <CommentsList />
+            </ComentsProvider>
           </div>
         </div>
       </div>

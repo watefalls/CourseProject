@@ -8,10 +8,12 @@ import _ from "lodash";
 import Loader from "../../ui/loader";
 import { useUsers } from "../../../hooks/useUsers";
 import { useProfession } from "../../../hooks/useProfession";
+import { useAuth } from "../../../hooks/useAuth";
 
 const UserListPage = () => {
   const { users } = useUsers();
-  const { professions, getProfession } = useProfession();
+  const { currentUser } = useAuth();
+  const { professions, getProfession, isLoading: loadProf } = useProfession();
   const [selectedProf, setSelectedProf] = useState();
   const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,16 +30,6 @@ const UserListPage = () => {
       handlePageChange((prevState) => prevState - 1);
     }
   }, [itemsCount]);
-
-  const handleDelete = (userId) => {
-    // setUsers((prevState) => prevState.filter((user) => user._id !== userId));
-    console.log(userId);
-  };
-
-  const handleToggleBookmark = (id) => {
-    const currentUser = users.find((user) => user._id === id);
-    currentUser.status = true;
-  };
 
   const clearFilter = () => {
     setSelectedProf();
@@ -64,17 +56,23 @@ const UserListPage = () => {
         user.name && user.name.toLowerCase().includes(search.toLowerCase())
     );
 
-    const filteredUsers = search
-      ? users.filter(
-          (user) =>
-            user.name && user.name.toLowerCase().includes(search.toLowerCase())
-        )
-      : selectedProf
-      ? users.filter(
-          (user) => getProfession(user.profession).name === selectedProf
-        )
-      : searchedUsers;
+    function filterUsers(data) {
+      const filteredUsers = search
+        ? data.filter(
+            (user) =>
+              user.name &&
+              user.name.toLowerCase().includes(search.toLowerCase())
+          )
+        : selectedProf
+        ? data.filter(
+            (user) => getProfession(user.profession).name === selectedProf
+          )
+        : searchedUsers;
 
+      return filteredUsers.filter((u) => u._id !== currentUser._id);
+    }
+
+    const filteredUsers = filterUsers(users);
     const count = filteredUsers.length;
     const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
     const userCrop = paginate(sortedUsers, currentPage, pageSize);
@@ -85,12 +83,12 @@ const UserListPage = () => {
           <div className="searchStatus mb-10">
             <h1>
               <span className="badge bg-primary">
-                {SearchStatus(searchedUsers.length)}
+                {SearchStatus(filterUsers(users).length)}
               </span>
             </h1>
           </div>
           <div className="d-flex mt-2">
-            {professions && (
+            {professions && !loadProf && (
               <div className="d-flex flex-column flex-shrink-0 p-3">
                 <GroupList
                   items={professions}
@@ -120,8 +118,6 @@ const UserListPage = () => {
                 count={count}
                 selectedSort={sortBy}
                 onSort={handleSort}
-                onDelete={handleDelete}
-                toggleBookmark={handleToggleBookmark}
               />
             </div>
           </div>

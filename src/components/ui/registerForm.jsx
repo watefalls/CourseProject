@@ -17,19 +17,25 @@ const RegisterForm = () => {
     profession: "",
     sex: "male",
     qualities: [],
-    licence: false
+    licence: false,
+    name: ""
   });
   const history = useHistory();
   const { signUp } = useAuth();
   const [errors, setErrors] = useState({});
   const { qualities } = useQuality();
-  const qualityList = qualities.map((q) => ({ value: q._id, label: q.name }));
   const { professions } = useProfession();
+  const profList = professions.map((p) => ({ value: p._id, label: p.name }));
+  const qualList = qualities.map((q) => ({ value: q._id, label: q.name }));
 
   const validatorConfig = {
     email: {
       isRequired: { message: "Электронная почта обязательна для заполнения" },
       isEmail: { message: "Email введен не коректно" }
+    },
+    name: {
+      isRequired: { message: "Имя обязательно для заполнения" },
+      min: { message: "Имя должено состоять минимум из 3 символов", value: 3 }
     },
     password: {
       isRequired: { message: "Пароль обязателен для заполнения" },
@@ -90,6 +96,13 @@ const RegisterForm = () => {
         error={errors.email}
       />
       <TextField
+        label="Имя"
+        name="name"
+        value={data.name}
+        onChange={handleChange}
+        error={errors.name}
+      />
+      <TextField
         label="Пароль"
         type="password"
         name="password"
@@ -100,7 +113,7 @@ const RegisterForm = () => {
       <SelectField
         label="Выберите вашу профессию"
         onChange={handleChange}
-        options={{ ...professions }}
+        options={profList}
         name="profession"
         defaultOption="Choose.."
         error={errors.profession}
@@ -118,7 +131,7 @@ const RegisterForm = () => {
         label="Выберите ваш пол"
       />
       <MultiSelectField
-        options={qualityList}
+        options={qualList}
         onChange={handleChange}
         name="qualities"
         defaultValue={data.qualities}

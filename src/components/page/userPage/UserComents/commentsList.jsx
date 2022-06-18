@@ -1,28 +1,20 @@
-import React, { useEffect, useState } from "react";
-import api from "../../../../api";
-import { useParams } from "react-router-dom";
+import React from "react";
 import Coment from "./coment";
 import _ from "lodash";
 import AddComment from "./addComment";
+import { useComents } from "../../../../hooks/useComents";
+import Loader from "../../../ui/loader";
 
 const CommentsList = () => {
-  const { id } = useParams();
-  const [coments, setComents] = useState([]);
-
-  useEffect(() => {
-    api.comments.fetchCommentsForUser(id).then((data) => setComents(data));
-  }, []);
+  const { coments, isLoading, removeComent } = useComents();
+  const { createComent } = useComents();
 
   const handleSubmit = (data) => {
-    api.comments
-      .add({ ...data, pageId: id })
-      .then((data) => setComents([...coments, data]));
+    createComent(data);
   };
 
   const handleRemoveComent = (id) => {
-    api.comments
-      .remove(id)
-      .then((id) => setComents(coments.filter((coment) => coment._id !== id)));
+    removeComent(id);
   };
 
   // const sertedComents = coments.sort((a, b) => a.created_at < b.created_at);
@@ -35,7 +27,7 @@ const CommentsList = () => {
           <AddComment onSubmit={handleSubmit} />
         </div>
       </div>
-      {coments.length ? (
+      {!isLoading ? (
         <div className="card mb-3">
           <div className="card-body ">
             <h2>Comments</h2>
@@ -50,7 +42,7 @@ const CommentsList = () => {
           </div>
         </div>
       ) : (
-        ""
+        <Loader />
       )}
     </>
   );
