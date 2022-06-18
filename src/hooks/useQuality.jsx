@@ -28,6 +28,11 @@ export const QualityProvider = ({ children }) => {
     }
   }
 
+  function errorCather(error) {
+    const { message } = error.response.data;
+    setError(message);
+  }
+
   useEffect(() => {
     if (error !== null) {
       toast(error);
@@ -39,10 +44,6 @@ export const QualityProvider = ({ children }) => {
     return qualities.find((q) => q._id === id);
   };
 
-  function errorCather(error) {
-    const { message } = error.response.data;
-    setError(message);
-  }
   return (
     <QualityContext.Provider value={{ isLoading, getQuality, qualities }}>
       {children}
