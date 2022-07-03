@@ -1,29 +1,15 @@
-import React, { useEffect, useState } from "react";
-import SelectField from "../../../common/form/selectField";
+import React, { useState } from "react";
+// import SelectField from "../../../common/form/selectField";
 import PropTypes from "prop-types";
-import API from "../../../../api";
 import { validator } from "../../../../utils/validator";
 import TextAreaField from "../../../common/form/textAreaField";
-const initialState = { userId: "", content: "" };
 
 const AddComment = ({ onSubmit }) => {
-  const [data, setData] = useState(initialState);
-  const [users, setUsers] = useState({});
+  const [data, setData] = useState({});
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    API.users.fetchAll().then((data) => setUsers(data));
-  }, []);
-
-  const arrayOfUsers =
-    users &&
-    Object.keys(users).map((user) => ({
-      label: users[user].name,
-      value: users[user]._id
-    }));
-
   const clearForm = () => {
-    setData(initialState);
+    setData({});
     setErrors({});
   };
 
@@ -43,11 +29,6 @@ const AddComment = ({ onSubmit }) => {
   };
 
   const validatorConfig = {
-    userId: {
-      isRequired: {
-        message: "Выберите от чьего имени вы хотите отправить коментарий"
-      }
-    },
     content: {
       isRequired: { message: "Сообщение не может быть пустым" }
     }
@@ -61,18 +42,9 @@ const AddComment = ({ onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <SelectField
-        label="Выберите имя"
-        onChange={hadleChange}
-        options={arrayOfUsers}
-        name="userId"
-        value={data.userId}
-        error={errors.userId}
-        defaultOption="Выберите пользователя"
-      />
       <TextAreaField
         className="form-control"
-        value={data.content}
+        value={data.content || ""}
         onChange={hadleChange}
         name="content"
         label="Cообщение"

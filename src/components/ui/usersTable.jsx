@@ -6,14 +6,7 @@ import Table from "../common/table";
 import User from "../common/table/user";
 import Profession from "./profession";
 
-const UserTable = ({
-  users,
-  onSort,
-  selectedSort,
-  toggleBookmark,
-  onDelete,
-  count
-}) => {
+const UserTable = ({ users, onSort, selectedSort, count }) => {
   const columns = {
     name: {
       path: "name",
@@ -33,16 +26,7 @@ const UserTable = ({
     bookmark: {
       path: "bookmark",
       name: "Избранное",
-      component: (user) => (
-        <Bookmark onChangeIcon={() => toggleBookmark(user._id)} />
-      )
-    },
-    delete: {
-      component: (user) => (
-        <button className="btn btn-danger" onClick={() => onDelete(user._id)}>
-          Delete
-        </button>
-      )
+      component: () => <Bookmark />
     }
   };
 
@@ -61,8 +45,6 @@ UserTable.propTypes = {
   users: PropTypes.array.isRequired,
   onSort: PropTypes.func.isRequired,
   selectedSort: PropTypes.object.isRequired,
-  toggleBookmark: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
   count: PropTypes.number.isRequired
 };
 

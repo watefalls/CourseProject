@@ -50,7 +50,9 @@ const LoginForm = () => {
     if (!isValid) return null;
     try {
       await signIn(data);
-      history.push("/");
+      history.push(
+        history.location.state ? history.location.state.from.pathname : "/"
+      );
     } catch (error) {
       console.log(error);
       setErrors(error);

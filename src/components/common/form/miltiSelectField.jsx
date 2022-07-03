@@ -12,15 +12,16 @@ const MultiSelectField = ({ options, onChange, name, label, defaultValue }) => {
     onChange({ name: name, value });
   };
 
-  const defaultValueFormat = (value) => {
-    const format = [];
-    for (const val of value) {
-      format.push({
-        value: val.id,
-        label: val.name
-      });
+  const optionDefaultValue = () => {
+    const values = [];
+    for (let i = 0; i < optionsArray.length; i++) {
+      for (let j = 0; j < defaultValue.length; j++) {
+        if (optionsArray[i].value === defaultValue[j]) {
+          values.push(optionsArray[i]);
+        }
+      }
     }
-    return format;
+    return values;
   };
 
   return (
@@ -32,7 +33,7 @@ const MultiSelectField = ({ options, onChange, name, label, defaultValue }) => {
         classNamePrefix="select"
         onChange={handleChange}
         options={optionsArray}
-        defaultValue={defaultValueFormat(defaultValue)}
+        defaultValue={optionDefaultValue()}
         name={name}
         closeMenuOnSelect={false}
       />
@@ -45,7 +46,7 @@ MultiSelectField.propTypes = {
   onChange: PropTypes.func,
   name: PropTypes.string,
   label: PropTypes.string,
-  defaultValue: PropTypes.array,
+  defaultValue: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   error: PropTypes.string
 };
 

@@ -9,7 +9,7 @@ import SelectField from "../common/form/selectField";
 import { useProfession } from "../../hooks/useProfession";
 import { useQuality } from "../../hooks/useQuality";
 import { useUsers } from "../../hooks/useUsers";
-import httpService from "../../services/http.service";
+import { useAuth } from "../../hooks/useAuth";
 
 const EditUser = () => {
   const params = useParams();
@@ -18,19 +18,17 @@ const EditUser = () => {
   const { usersGetById } = useUsers();
   const { professions, isLoading: loadProf, getProfession } = useProfession();
   const { qualities, isLoading: loadQual } = useQuality();
+  const { userUpdate } = useAuth();
   const user = usersGetById(id);
-  const initialState = user || {};
   const [errors, setErrors] = useState({});
-  const [data, setData] = useState(initialState);
-  const profList = professions.map((prof) => ({
-    label: prof.name,
-    value: prof._id
-  }));
+  const [data, setData] = useState(user || {});
 
-  const qualList = qualities.map((qual) => ({
-    label: qual.name,
-    value: qual._id
-  }));
+  useEffect(() => {
+    validate();
+  }, [data]);
+
+  const profList = professions.map((p) => ({ value: p._id, label: p.name }));
+  const qualList = qualities.map((q) => ({ value: q._id, label: q.name }));
 
   const validatorConfig = {
     name: {
@@ -74,31 +72,11 @@ const EditUser = () => {
 
   const isValid = Object.keys(errors).length === 0;
 
-  useEffect(() => {
-    validate();
-  }, [data]);
-
   if (!loadProf && !loadQual) {
-    const getProfessionById = (id) => {
-      for (const prof of professions) {
-        if (prof.value === id) {
-          return { _id: prof.value, name: prof.label };
-        }
-      }
-    };
-
     const getQualities = (elements) => {
       const qualitiesArray = [];
       for (const elem of elements) {
-        for (const quality in qualities) {
-          if (elem.value === qualities[quality].value) {
-            qualitiesArray.push({
-              _id: qualities[quality].value,
-              name: qualities[quality].label,
-              color: qualities[quality].color
-            });
-          }
-        }
+        qualitiesArray.push(elem.value);
       }
       return qualitiesArray;
     };
@@ -107,14 +85,8 @@ const EditUser = () => {
       e.preventDefault();
       const isValid = validate();
       if (!isValid) return;
+      userUpdate({ ...data, qualities: getQualities(data.qualities) });
       history.push(`/users/${id}`);
-      // eslint-disable-next-line no-unused-vars
-      const { profession, qualities } = data;
-      httpService.put(`user/${id}`, {
-        ...data,
-        profession: getProfessionById(data.profession),
-        qualities: getQualities(data.qualities)
-      });
     };
 
     return (
