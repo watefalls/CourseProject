@@ -6,22 +6,27 @@ import Loader from "../ui/loader";
 import MultiSelectField from "../common/form/miltiSelectField";
 import RadioField from "../common/form/radioField";
 import SelectField from "../common/form/selectField";
-import { useProfession } from "../../hooks/useProfession";
-import { useQuality } from "../../hooks/useQuality";
-import { useUsers } from "../../hooks/useUsers";
-import { useAuth } from "../../hooks/useAuth";
+import { useSelector, useDispatch } from "react-redux";
+import { getLoadingQualitiesState, getQualities } from "../../store/qualities";
+import {
+  getLoadingProfessionsState,
+  getProfessionById,
+  getProfessions
+} from "../../store/professions";
+import { getUserById, updateUser } from "../../store/users";
 
 const EditUser = () => {
   const params = useParams();
   const history = useHistory();
   const { id } = params;
-  const { usersGetById } = useUsers();
-  const { professions, isLoading: loadProf, getProfession } = useProfession();
-  const { qualities, isLoading: loadQual } = useQuality();
-  const { userUpdate } = useAuth();
-  const user = usersGetById(id);
+  const user = useSelector(getUserById(id));
+  const professions = useSelector(getProfessions());
+  const loadProf = useSelector(getLoadingProfessionsState());
+  const qualities = useSelector(getQualities());
+  const loadQual = useSelector(getLoadingQualitiesState());
   const [errors, setErrors] = useState({});
   const [data, setData] = useState(user || {});
+  const dispatch = useDispatch();
 
   useEffect(() => {
     validate();
@@ -53,6 +58,9 @@ const EditUser = () => {
       profession: {
         isRequired: { message: "Поле обязательно для заполнения" }
       }
+    },
+    qualities: {
+      isRequiredSelected: { message: "Выбереите ваши качества" }
     }
   };
 
@@ -73,6 +81,8 @@ const EditUser = () => {
   const isValid = Object.keys(errors).length === 0;
 
   if (!loadProf && !loadQual) {
+    const prof = useSelector(getProfessionById(data.profession));
+
     const getQualities = (elements) => {
       const qualitiesArray = [];
       for (const elem of elements) {
@@ -85,7 +95,9 @@ const EditUser = () => {
       e.preventDefault();
       const isValid = validate();
       if (!isValid) return;
-      userUpdate({ ...data, qualities: getQualities(data.qualities) });
+      dispatch(
+        updateUser({ ...data, qualities: getQualities(data.qualities) })
+      );
       history.push(`/users/${id}`);
     };
 
@@ -123,7 +135,7 @@ const EditUser = () => {
                   onChange={handleChange}
                   options={profList}
                   name="profession"
-                  defaultOption={getProfession(data.profession).name}
+                  defaultOption={prof.name}
                   error={errors.profession}
                   value={data.profession}
                 />
@@ -143,7 +155,7 @@ const EditUser = () => {
                   onChange={handleChange}
                   name="qualities"
                   label="Выберите ваши качества"
-                  defaultValue={data.qualities}
+                  defaultValue={data.qualities ? data.qualities : []}
                   error={errors.qualities}
                 />
 

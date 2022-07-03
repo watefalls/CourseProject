@@ -9,6 +9,8 @@ import localStorageService, {
 } from "../services/localStorage.service";
 import Loader from "../components/ui/loader";
 import { useHistory } from "react-router-dom";
+import { randomInt } from "../utils/randomInt";
+import { generateAuthError } from "../utils/generaiteAuthError";
 
 export const httpAuth = axios.create({
   baseURL: "https://identitytoolkit.googleapis.com/v1/",
@@ -19,10 +21,6 @@ export const httpAuth = axios.create({
 const AuthContext = React.createContext();
 export const useAuth = () => {
   return useContext(AuthContext);
-};
-
-const randomInt = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
 const AuthProvider = ({ children }) => {
@@ -64,12 +62,7 @@ const AuthProvider = ({ children }) => {
       errorCather(error);
       const { code, message } = error.response.data.error;
       if (code === 400) {
-        if (message === "EMAIL_EXISTS") {
-          const errorEmail = {
-            email: "Пользователь с таким Email уже существует"
-          };
-          throw errorEmail;
-        }
+        generateAuthError(message);
       }
     }
   }
@@ -87,18 +80,7 @@ const AuthProvider = ({ children }) => {
       errorCather(error);
       const { code, message } = error.response.data.error;
       if (code === 400) {
-        if (message === "EMAIL_NOT_FOUND") {
-          const errorEmail = {
-            email: "Не правильный Email"
-          };
-          throw errorEmail;
-        }
-        if (message === "INVALID_PASSWORD") {
-          const errorPassword = {
-            email: "Не правильный пароль"
-          };
-          throw errorPassword;
-        }
+        generateAuthError(message);
       }
     }
   }

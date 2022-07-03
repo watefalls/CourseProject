@@ -1,17 +1,15 @@
 import React from "react";
 import Loader from "../../ui/loader";
-// import api from "../../../api";
 import PropTypes from "prop-types";
 import UserCardQualities from "./userCardQualities";
 import CardUser from "./cardUser";
 import UserCardMeet from "./userCardMeet";
 import CommentsList from "./UserComents/commentsList";
-import { useUsers } from "../../../hooks/useUsers";
-import { ComentsProvider } from "../../../hooks/useComents";
+import { useSelector } from "react-redux";
+import { getUserById } from "../../../store/users";
 
 const UserPage = ({ id }) => {
-  const { usersGetById } = useUsers();
-  const user = usersGetById(id);
+  const user = useSelector(getUserById(id));
 
   if (user) {
     return (
@@ -23,9 +21,7 @@ const UserPage = ({ id }) => {
             <UserCardMeet {...user} />
           </div>
           <div className="col-md-8">
-            <ComentsProvider>
-              <CommentsList />
-            </ComentsProvider>
+            <CommentsList />
           </div>
         </div>
       </div>

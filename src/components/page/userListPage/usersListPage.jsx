@@ -6,14 +6,18 @@ import { paginate } from "../../../utils/paginate";
 import GroupList from "../../common/groupList";
 import _ from "lodash";
 import Loader from "../../ui/loader";
-import { useUsers } from "../../../hooks/useUsers";
-import { useProfession } from "../../../hooks/useProfession";
-import { useAuth } from "../../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import {
+  getLoadingProfessionsState,
+  getProfessions
+} from "../../../store/professions";
+import { getUsers, getCurrentUserId } from "../../../store/users";
 
 const UserListPage = () => {
-  const { users } = useUsers();
-  const { currentUser } = useAuth();
-  const { professions, getProfession, isLoading: loadProf } = useProfession();
+  const users = useSelector(getUsers());
+  const currentId = useSelector(getCurrentUserId());
+  const professions = useSelector(getProfessions());
+  const loadProf = useSelector(getLoadingProfessionsState());
   const [selectedProf, setSelectedProf] = useState();
   const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,6 +43,10 @@ const UserListPage = () => {
     setSelectedProf(item);
     handlePageChange(1);
     setSearch("");
+  };
+
+  const getProfession = (id) => {
+    return professions.find((p) => p._id === id);
   };
 
   const handleSort = (item) => {
@@ -69,7 +77,7 @@ const UserListPage = () => {
           )
         : searchedUsers;
 
-      return filteredUsers.filter((u) => u._id !== currentUser._id);
+      return filteredUsers.filter((u) => u._id !== currentId);
     }
 
     const filteredUsers = filterUsers(users);

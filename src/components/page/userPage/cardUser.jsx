@@ -2,16 +2,21 @@ import React from "react";
 import Avatar from "./avatar";
 import PropTypes from "prop-types";
 import { useHistory } from "react-router-dom";
-import { useProfession } from "../../../hooks/useProfession";
 import Loader from "../../ui/loader";
-import { useAuth } from "../../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import {
+  getLoadingProfessionsState,
+  getProfessionById
+} from "../../../store/professions";
+import { getCurrentUserId } from "../../../store/users";
 
 const CardUser = ({ user }) => {
-  const { currentUser } = useAuth();
-  const { getProfession, isLoading } = useProfession();
+  const currentUserId = useSelector(getCurrentUserId());
   const { _id, profession, rate, name, image } = user;
-  const prof = getProfession(profession);
+  const isLoading = useSelector(getLoadingProfessionsState());
+  const prof = useSelector(getProfessionById(profession));
   const history = useHistory();
+
   const handleEdit = (id) => {
     history.push(`${id}/edit`);
   };
@@ -20,7 +25,7 @@ const CardUser = ({ user }) => {
     return (
       <div className="card mb-3">
         <div className="card-body">
-          {currentUser._id === user._id && (
+          {currentUserId === user._id && (
             <button
               className="position-absolute top-0 end-0 btn btn-light btn-sm"
               onClick={() => handleEdit(_id)}

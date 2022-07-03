@@ -1,23 +1,46 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Coment from "./coment";
 import _ from "lodash";
 import AddComment from "./addComment";
-import { useComents } from "../../../../hooks/useComents";
+import { nanoid } from "nanoid";
 import Loader from "../../../ui/loader";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  comentCreated,
+  comentRemoved,
+  getcoments,
+  getLoadingcomentsStatus,
+  loadcomentsList
+} from "../../../../store/comentsSlice";
+import { useParams } from "react-router-dom";
+import { getCurrentUserId } from "../../../../store/users";
 
 const CommentsList = () => {
-  const { coments, isLoading, removeComent } = useComents();
-  const { createComent } = useComents();
+  const dispatch = useDispatch();
+  const isLoading = useSelector(getLoadingcomentsStatus());
+  const params = useParams();
+  const currentUserId = useSelector(getCurrentUserId());
+  const coments = useSelector(getcoments());
+
+  useEffect(() => {
+    dispatch(loadcomentsList(params.id));
+  }, [params.id]);
 
   const handleSubmit = (data) => {
-    createComent(data);
+    const coment = {
+      ...data,
+      pageId: params.id,
+      created_at: Date.now(),
+      userId: currentUserId,
+      _id: nanoid()
+    };
+    dispatch(comentCreated(coment));
   };
 
   const handleRemoveComent = (id) => {
-    removeComent(id);
+    dispatch(comentRemoved(id));
   };
 
-  // const sertedComents = coments.sort((a, b) => a.created_at < b.created_at);
   const sortedComents = _.orderBy(coments, ["created_at"], ["desc"]);
 
   return (

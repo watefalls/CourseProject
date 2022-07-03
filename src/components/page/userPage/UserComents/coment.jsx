@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import Avatar from "../avatar";
 import { showDate } from "../../../../utils/showDate";
-import { useUsers } from "../../../../hooks/useUsers";
-import { useAuth } from "../../../../hooks/useAuth";
+import { getCurrentUserId, getUserById } from "../../../../store/users";
+import { useSelector } from "react-redux";
 
 const Coment = ({
   _id,
@@ -13,9 +13,8 @@ const Coment = ({
   created_at: created,
   onRemove
 }) => {
-  const { currentUser } = useAuth();
-  const { usersGetById } = useUsers();
-  const user = usersGetById(userId);
+  const currentuserId = useSelector(getCurrentUserId());
+  const user = useSelector(getUserById(userId));
 
   return (
     <div key={pageId} className="bg-light card-body  mb-3">
@@ -33,7 +32,7 @@ const Coment = ({
                       - <b>{showDate(created)}</b>
                     </span>
                   </p>
-                  {currentUser._id === userId ? (
+                  {currentuserId === userId ? (
                     <button
                       className="btn btn-sm text-primary d-flex align-items-center"
                       onClick={() => onRemove(_id)}

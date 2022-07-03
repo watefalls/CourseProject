@@ -1,18 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Redirect, Route } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { getIsLoggedIn } from "../../store/users";
 
 const ProtectedRoute = ({ component: Component, children, ...rest }) => {
-  const { currentUser } = useAuth();
-  const { params } = rest.computedMatch;
-  const { id } = rest.computedMatch.params;
+  const isLoggedIn = useSelector(getIsLoggedIn());
 
   return (
     <Route
       {...rest}
       render={(props) => {
-        if (!currentUser) {
+        if (!isLoggedIn) {
           return (
             <Redirect
               to={{
@@ -24,17 +23,6 @@ const ProtectedRoute = ({ component: Component, children, ...rest }) => {
             />
           );
         }
-
-        if (id !== currentUser._id && params.edit) {
-          return (
-            <Redirect
-              to={{
-                pathname: `/users/${currentUser._id}/edit`
-              }}
-            />
-          );
-        }
-
         return Component ? <Component {...props} /> : children;
       }}
     />
