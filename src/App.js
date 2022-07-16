@@ -5,30 +5,24 @@ import Main from "./layouts/main";
 import Login from "./layouts/login";
 import NavBar from "./components/ui/navBar";
 import { ToastContainer } from "react-toastify";
-import { ProfessionProvider } from "./hooks/useProfession";
-import { QualityProvider } from "./hooks/useQuality";
-import AuthProvider from "./hooks/useAuth";
 import ProtectedRoute from "./components/common/protectedRoute";
 import LogOut from "./layouts/logOut";
+import AppLoader from "./components/hoc/appLoader";
 
 function App() {
   return (
     <div>
-      <AuthProvider>
+      <AppLoader>
         <NavBar />
-        <ProfessionProvider>
-          <QualityProvider>
-            <Switch>
-              <ProtectedRoute path="/users/:id?/:edit?" component={Users} />
-              <Route path="/login:type?" component={Login} />
-              <Route path="/logout" component={LogOut} />
-              <Route path="/" exact component={Main} />
-              <Redirect to="/" />
-            </Switch>
-          </QualityProvider>
-        </ProfessionProvider>
-      </AuthProvider>
-      <ToastContainer />
+        <Switch>
+          <ProtectedRoute path="/users/:id?/:edit?" component={Users} />
+          <Route path="/login:type?" component={Login} />
+          <Route path="/logout" component={LogOut} />
+          <Route path="/" exact component={Main} />
+          <Redirect to="/" />
+        </Switch>
+        <ToastContainer />
+      </AppLoader>
     </div>
   );
 }
